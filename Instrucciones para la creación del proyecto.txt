@@ -1,0 +1,283 @@
+
+EL TESORO DE SER POLITÉCNICO
+
+- Instructivo de la creación de la estructura del Juego
+Serio para la Escuela Politécnica Nacional (EPN)
+
+------------------------------------------------------------
+------------------------------------------------------------
+NODEJS
+------------------------------------------------------------
+version: v10.16.3
+------------------------------------------------------------
+
+   1) Instalar node JS
+	https://nodejs.org/es/download/
+
+
+
+
+
+------------------------------------------------------------
+------------------------------------------------------------
+Creación del Backend (sails-backend)
+------------------------------------------------------------
+Sails versión : 1.2.3
+------------------------------------------------------------
+
+   1) Instalar sails
+	
+	> npm i -g sails
+
+   2) Crear un directorio y ejecutar el siguiente comando 
+
+	> sails new sails-backend
+	
+	Choose a template for your new Sails app:
+	> 2
+
+   3) Crear un API
+
+	> sails generate api usuario
+
+   4) Para levantar el servidor 
+
+	> sails lift –port 1358 
+
+
+------------------------------------------------------------
+Creación del modelo de base de datos
+------------------------------------------------------------
+   1) Crear un API
+
+	> sails generate api player
+	> sails generate api powerup
+	> sails generate api powerupDetail
+	> sails generate api achievement
+	> sails generate api achievementDetail
+	> sails generate api area
+	> sails generate api location
+	> sails generate api minigame
+	> sails generate api question
+	> sails generate api answer
+	> sails generate api puzzle
+	> sails generate api riddle
+	
+------------------------------------------------------------
+Configuracion mysql en sails
+------------------------------------------------------------
+
+   1) Instalar el adptador mysql con el comando
+	
+	> npm i sails-mysql --save
+
+   2) Abrir el archivo datastores.js dentro de la carpeta config
+
+   3) Descomentar:
+
+	// adapter: 'sails-mysql',
+    	// url: 'mysql://user:password@host:port/database',
+
+   4) Editar lo descomentado con los datos de la base de datos mysql
+	  
+	adapter: 'sails-mysql',
+	url: 'mysql://wsbinsid_test:mysql123@wsbinside-user2.info:3306/wsbinsid_test',
+
+------------------------------------------------------------
+Configuracion de seguridades
+------------------------------------------------------------
+
+   1) Abrir el archivo security.js dentro de la carpeta config
+
+   3) Descomentar:
+	
+	// cors: {
+  	//   allRoutes: false,
+  	//   allowOrigins: '*',
+  	//   allowCredentials: false,
+  	// },
+
+   4) Editar lo descomentado con:
+	
+	  cors: {
+	     allRoutes: true,
+	     allowOrigins: '*',
+	     allowCredentials: false,
+	  },
+
+   5) Editar las rutas en el archivo route.js dentro de la carpeta config
+
+
+
+
+
+------------------------------------------------------------
+------------------------------------------------------------
+Creación del Frontend (ionic-frontend) 
+------------------------------------------------------------
+Ionic CLI : 5.4.2
+------------------------------------------------------------
+
+   1) Instalar ionic
+	
+	> npm install -g ionic
+
+   2) Crear un directorio y ejecutar el siguiente comando 
+
+	> ionic start ionic-frontend
+
+	Pick a framework:
+	> Angular
+
+	Starter template:
+	> blank
+
+   3) Para levantar el servidor
+
+	> ionic serve 
+
+------------------------------------------------------------
+Configuración de phaser 3 con typescript en Ionic
+------------------------------------------------------------
+
+   1) Instalar phaser 3
+	
+	> npm install phaser
+
+   2) Agregar en seccion de "scripts":[] en el archivo angular.json
+
+	"node_modules/phaser/dist/phaser.js",
+	"node_modules/phaser/dist/phaser.min.js",
+	"node_modules/phaser/dist/phaser-arcade-physics.js"
+
+   3) Agregar en el archivo tsconfig.app.json
+
+	"inclue": [ "*.d.ts" ]
+	
+	(sirve para usar phaser typescript)
+
+   4) Acceder al archivo polyfills.ts de la carpeta src
+
+   5) Comentar la linea | import './zone-flags.ts';
+
+	// import './zone-flags.ts';
+
+
+------------------------------------------------------------
+Agregación del archivo typescript de phaser 3 al proyecto
+------------------------------------------------------------
+
+   1) Crear la carpeta types ---> hace referencia a typescript
+	dentro de /src/
+	
+   2) Copiar el archivo phaser.ts de /node-module/phaser/types/
+
+   3) Pegar el archivo phaser.ts dentro de /src/types/
+	
+   4) Abrir el archivo phaser.ts
+	
+   5) Buscar ActiveXObject y remplazarlo por any
+	
+	Antes:
+	function ParseXML(data: string): DOMParser | ActiveXObject;
+
+	Después:
+	function ParseXML(data: string): DOMParser | any;
+
+
+------------------------------------------------------------
+Configuración del entorno del juego phaser dentro del:
+	- componente o página *.ts "home.page.ts"
+------------------------------------------------------------
+
+   1) Implementar el OnInit al componente o página
+    
+	export class HomePage implements OnInit {
+		...
+		ngOnInit(): void {}
+	}
+	
+   2) Crear una varible con las configuraciones del juego
+
+	config = {
+	    backgroundColor: '#000022',
+	    parent: 'juego',
+	    type: Phaser.AUTO,
+	    width: window.innerWidth,
+	    height: window.innerHeight,
+	    pixelArt: true,
+	    physics: {
+	      default: 'arcade',
+	      arcade: {
+	        gravity: {
+	          y: 300
+	        },
+	        debug: false
+	      }
+	    },
+	
+   3) Crear una varible para inicialziar el juego
+	
+	  game: Phaser.Game;
+	 
+   4) Inicializar el juego con las configuraciones establecidas
+	
+	ngOnInit(): void {
+	    this.game = new Phaser.Game(this.config);
+	}
+
+
+------------------------------------------------------------
+Configuración del entorno del juego phaser dentro del:
+	- componente o página *.html "home.page.html"
+------------------------------------------------------------
+
+   1) Agregar un contenedor vacio
+
+	<ion-content> </ion-content>
+	
+   2) Agregar un división dentro del contenedor con un id
+	similar al parent de la configuracion del juego phaser 
+	
+	<ion-content>
+	      <div id="juego"> </div>
+	</ion-content>
+	
+
+------------------------------------------------------------
+Solución al error de FAVICON
+------------------------------------------------------------
+ERROR:
+	Refused to load the image 'http://localhost:8100/favicon.ico' because it violates the following Content Security Policy directive: "default-src 'none'". Note that 'img-src' was not explicitly set, so 'default-src' is used as a fallback.
+	localhost/:1 Failed to load resource: the server responded with a status of 404 (Not Found)
+
+   1) Acceder al archivo polyfills.ts de la carpeta src
+	
+   2) Aumentar las iguiente linea al final del archivo
+	
+	(window as any).global = window;
+
+
+------------------------------------------------------------
+Generar página pantallas del Juego
+------------------------------------------------------------
+
+   1) Ejecutar comando 
+
+	> ionic g page pantallaInicio
+	> ionic g page pantallaPrincipal
+	> ionic g page pantallaMapaEPN
+	> ionic g page pantallaMapaZonaAdminsitrativa
+	
+
+------------------------------------------------------------
+Generar clases Juego
+------------------------------------------------------------
+
+   1) Ejecutar comando 
+
+	> ionic g class button
+	> ionic 
+	
+
+
